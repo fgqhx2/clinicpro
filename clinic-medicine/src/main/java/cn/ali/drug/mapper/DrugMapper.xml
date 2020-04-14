@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-A.m"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ali.drug.mapper.DrugMapper">
+    <select id="findDrugByDrug_typeOrDrugNameOrPinYinCode" resultType="cn.ali.drug.pojo.Drug">
+        select d.*,dgt.`typeName` drug_type,ddf.`typeName` dosage_form,inv.`typeName` invoice, mid.`typeName` manufacturer,
+        usa.`typeName` usages ,fre.`typeName` frequency,gpun.`typeName` gross_unit from drug d
+        left join `dictionary` dgt on dgt.`id`= d.`drug_typeId`
+        left join `dictionary` ddf on ddf.`id`= d.`dosage_formId`
+        left join `dictionary` inv on inv.`id`= d.`invoiceId`
+        left join `dictionary` `mid` on `mid`.`id`= d.`manufacturerId`
+        left join `dictionary` usa on usa.`id`= d.`usageId`
+        left join `dictionary` fre on fre.`id`= d.`frequencyId`
+        left join `dictionary` gpun on gpun.`id`= d.`gross_unitId`
+        <where>
+            <if test="drug_typeId != null">
+            and d.`drug_typeId`=#{drug_typeId}
+            </if>
+            <if test="drugNameOrPinYinCode != null">
+                and d.`name` like concat ('%',#{drugNameOrPinYinCode},'%')
+                or d.`pinyinCode` like concat ('%',#{drugNameOrPinYinCode},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
